@@ -1,12 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"container/list"
+	"fmt"
+	"sync"
+)
 
 func main() {
 	//testArray()
 	//testMultiArray()
 	//testSplice()
-	testAppendSplice()
+	//testAppendSplice()
+	//testCopySplice()
+	//testDeleteSplice()
+	//testMultiSplice()
+	//testMap()
+	//testSyncMap()
+	testList()
 }
 
 /**
@@ -79,5 +89,90 @@ func testAppendSplice() {
 	// 仅打印元素
 	for _, v := range a {
 		fmt.Printf("%d\n", v)
+	}
+}
+
+/**
+ * 切片复制
+ */
+func testCopySplice() {
+	slice1 := []int{1, 2, 3, 4, 5}
+	slice2 := []int{5, 4, 3}
+	//copy(slice2, slice1) // 只会复制slice1的前3个元素到slice2中
+	copy(slice1, slice2) // 只会复制slice2的3个元素到slice1的前3个位置
+	for _, v := range slice1 {
+		fmt.Printf("%d ", v)
+	}
+	fmt.Println("----------")
+	for _, v := range slice2 {
+		fmt.Printf("%d ", v)
+	}
+}
+
+/**
+ * 切片删除
+ */
+func testDeleteSplice() {
+	var a = []int{1, 2, 3}
+	a = append(a[:1], a[1+1:]...) // 删除中间1个元素
+	//a = append(a[:i], a[i+N:]...)  // 删除中间N个元素
+	//a = a[:i+copy(a[i:], a[i+1:])] // 删除中间1个元素
+	//a = a[:i+copy(a[i:], a[i+N:])] // 删除中间N个元素
+
+	for _, v := range a {
+		fmt.Printf("%d ", v)
+	}
+}
+
+/**
+ * 多维切片
+ */
+func testMultiSplice() {
+	// 声明一个二维整型切片并赋值
+	slice := [][]int{{10}, {100, 200}}
+	fmt.Println(slice)
+}
+
+/**
+ * map
+ */
+func testMap() {
+	scene := make(map[string]int)
+	scene["route"] = 66
+	scene["brazil"] = 4
+	scene["china"] = 960
+	delete(scene, "china")
+	for k, v := range scene {
+		fmt.Println(k, v)
+	}
+}
+
+/**
+ * sync map
+ */
+func testSyncMap() {
+	var scene sync.Map
+	// 将键值对保存到sync.Map
+	scene.Store("greece", 97)
+	scene.Store("london", 100)
+	scene.Store("egypt", 200)
+	// 从sync.Map中根据键取值
+	fmt.Println(scene.Load("london"))
+	// 根据键删除对应的键值对
+	scene.Delete("london")
+	// 遍历所有sync.Map中的键值对
+	scene.Range(func(k, v interface{}) bool {
+		fmt.Println("iterate:", k, v)
+		return true
+	})
+}
+
+func testList() {
+	var valueList list.List
+	valueList.PushBack("fist")
+	valueList.PushFront(67)
+
+	for i := valueList.Front(); i != nil; i = i.Next() {
+		fmt.Println(i.Value)
 	}
 }
